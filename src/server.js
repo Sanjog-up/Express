@@ -1,11 +1,13 @@
 const http = require("http");
 const express = require("express");
+const {connectDB} = require("./config/db.config");
 const userRoutes = require("./routes/user.routes");
 const productRoutes = require("./routes/product.routes");
 
 //  creating server
 
 const PORT = 8080;
+const DB_URI = "mongodb://localhost:27017";
 
 //? rest api => GET, POST PUT/PATCH, DELETE
 
@@ -34,6 +36,9 @@ const app = express();
 //? creating server
 const server = http.createServer(app);
 
+//! connect database
+connectDB(DB_URI);
+
 //! pase req json data to as req.body
 app.use(express.json()); // req.body = {}
 
@@ -42,6 +47,7 @@ app.use(express.json()); // req.body = {}
 app.get("/", (req, res) => {
   res.send("<h1>Home Page</h1>");
 });
+
 
 //! using routes
 app.use("/users", userRoutes);

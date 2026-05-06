@@ -13,19 +13,21 @@ const router = express.Router();
 
 // get /users
 // read
-router.get("/users", getUsers);
+
+router.get("/", getUsers);
 
 //? get by id
 // /users/1 
-router.get("/users/:id", getById);
+router.get("/john", getById);
+router.get("/:id", getById);
 
 //! create
-router.post("/users", create);
+router.post("/", create);
 
 //! update
-router.put("/users/:id", update);
+router.put("/:id", update);
 
 //! delete
-router.delete("/users/:id", remove);
+router.delete("/:id", remove);
 
 module.exports = router;
