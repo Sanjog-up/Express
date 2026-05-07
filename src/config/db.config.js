@@ -12,4 +12,5 @@ exports.connectDB = (DB_URI) => {
       console.log("---databse connection error---");
       console.log(error);
     });
-} 
+};
+

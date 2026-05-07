@@ -1,11 +1,26 @@
+const User = require("../models/user.model");
 const users = [];
 
-exports.getUsers = (req, res) => {
+
+exports.getUsers = async (req, res) => {
+  try {
+  // database get all query
+  const users = await USER.find({});
+  // 
   res.status(200).json({
     message: "All users fetched",
     data: users,
   });
+} catch (error) {
+  res.status(500).json({
+    message: "something went wrong",
+    data: null,
+  })
+}
 };
+
+
+
 
 exports.getById = (req, res) => {
   // const id = req.params.id;
@@ -27,13 +42,30 @@ res.status(200).json({
 });
 };
 
- exports.create = (req, res) => {
+ exports.create = async (req, res) => {
+  try{
+    const {name, email, password, phone} = req.body;
   // req.body => {name: '', email: ''}
   // db op.
+  const user = await USER.create({
+    name, 
+    email,
+    password,
+    phone,
+  });
   res.status(201).json({
     message: "user created",
+    data: user,
   });
-};
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: error.message || "something wrong",
+      data: null,
+    });
+  }
+ };
+
 
 exports.update = (req, res) => {
   console.log(req.params);
