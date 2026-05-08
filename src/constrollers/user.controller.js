@@ -5,7 +5,7 @@ const users = [];
 exports.getUsers = async (req, res) => {
   try {
   // database get all query
-  const users = await USER.find({});
+  const users = await User.find({}); // get all query
   // 
   res.status(200).json({
     message: "All users fetched",
@@ -22,12 +22,16 @@ exports.getUsers = async (req, res) => {
 
 
 
-exports.getById = (req, res) => {
+exports.getById = async (req, res) => {
+  try{
   // const id = req.params.id;
   const { id } = req.params;
-  const user = users.find((user) => user._id.toString() === id.toString());
-  console.log(id);
-  console.log(user);
+ console.log(id);
+
+  const user = await User.findOne({ _id: id }); // returns single doc.
+//  const user = await User.find({ _id: id }); //[]
+//  const user = await User.findById(id); // returns single document or null
+  // console.log(user);
   if(!user) {
   res.status(404).json({
     message: "user not found",
@@ -37,17 +41,22 @@ exports.getById = (req, res) => {
 }
 // db query
 res.status(200).json({
-  message: "user fetched",
+  message: "User by id fetched",
   data: user,
 });
+} catch (error) {
+  res.status(500).json({
+    message: error.message || "something went wrong",
+    data: null,
+  });
+};
 };
 
- exports.create = async (req, res) => {
+exports.create = async (req, res) => {
   try{
-    const {name, email, password, phone} = req.body;
-  // req.body => {name: '', email: ''}
+  const { name, email, password, phone } = req.body;
   // db op.
-  const user = await USER.create({
+  const user = await User.create({
     name, 
     email,
     password,
@@ -57,24 +66,62 @@ res.status(200).json({
     message: "user created",
     data: user,
   });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: error.message || "something wrong",
-      data: null,
-    });
-  }
- };
+} catch (error) {
+  res.status(500).json({
+    message: error.message || "something went wrong",
+    data: null,
+  })
+};
+};
 
 
-exports.update = (req, res) => {
+
+exports.update = async (req, res) => {
+try {
   console.log(req.params);
-  const id = req.params.id;
-  // req.body => {name: '', email: ''}
-  // db op.
-  res.status(200).json({
-    message: "user updated",
+  const { id }= req.params;
+  const { name, email, password, phone } = req.body;
+
+  //! find one by id
+  const user = await User.findOne({ _id: id }); 
+
+  if(!user) {
+    res.status(404).json({
+      message: "User not found",
+      data: null,
+    })
+    return;
+  }
+
+  //! update user
+  if(name) {
+    user.name = name;
+  } 
+  if(email) {
+    user.email = email;
+  }
+  if(password) {
+    user.password = password;
+  }
+  if(phone) {
+    user.phone = phone;
+  }
+  // if (phone) {
+  //  user.phone = phone;
+  // }
+//! save user 
+await user.save();
+
+res.status(200).json({
+  message: "user updated",
+  data: user,
+}); 
+} catch (error) {
+  res.status(500).json({
+    message: error.message || "something went wrong",
+    data: null,
   });
+}
 };
 
 exports.remove = (req, res) => {
@@ -96,3 +143,7 @@ exports.remove = (req, res) => {
     message: "user deleted",
   });
 };
+
+//  User.findByIdAndDelete(id); // find by id and delete
+//  const user = await User.findOneAndDelete
+//  await user.dekleteOne(); // delete document

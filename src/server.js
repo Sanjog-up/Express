@@ -1,12 +1,14 @@
 const http = require("http");
 const express = require("express");
-const {connectDB} = require("./config/db.config");
+const { connectDB } = require("./config/db.config");
+//* importing routes 
 const userRoutes = require("./routes/user.routes");
 const productRoutes = require("./routes/product.routes");
 
 //  creating server
 
 const PORT = 8080;
+// const DB_URI = "mongodb://localhost:27017/expressdb";
 const DB_URI = "mongodb://localhost:27017";
 
 //? rest api => GET, POST PUT/PATCH, DELETE
@@ -55,20 +57,20 @@ app.use("/products", productRoutes);
 
 
 //  get -> /categories
-app.get("/categories", (req, res) => {
-  res.status(200).json([
-    {
-      _id: 1,
-      name: "dog",
-      height: "3",
-    },
-    {
-      _id: 2,
-      name: "sabbu",
-      age: "0",
-    },
-  ]);
-});
+// app.get("/categories", (req, res) => {
+//   res.status(200).json([
+//     {
+//       _id: 1,
+//       name: "dog",
+//       height: "3",
+//     },
+//     {
+//       _id: 2,
+//       name: "sabbu",
+//       age: "0",
+//     },
+//   ]);
+// });
 
 server.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);

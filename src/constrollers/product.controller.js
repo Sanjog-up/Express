@@ -1,24 +1,35 @@
-const products = [
-     {
-      _id: 1, 
-      name: "Ipad",
-      model: "ipad 3",
-    },
-    {
-      _id: 2,
-      name: "pant",
-      size: "30",
-    },
-]
+const Products = require("../models/product.model"); 
 
-
-
-exports.getAll = (req, res) => {
+exports.getAll = async (req, res) => {
+    try {
+    const products = await Products.find({});
     res.status(200).json({
         message: "All products fetched",
         data: products,
 })
+} catch (error)  {
+res.status(500).json({
+    message: "something went wrong",
+    data: null,
+});
 };
+};
+
+exports.createProduct = async(req, res) => {
+    try {
+        const product = await Products.create(req.body);
+        res.status(201).json({
+            message: "Product created",
+            data: product,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "something went wrong",
+            data: null,
+        });
+    }
+}
+
 
 exports.getProductById = (req, res) => {
     // const id = req.params.id;
