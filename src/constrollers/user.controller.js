@@ -124,24 +124,28 @@ res.status(200).json({
 }
 };
 
-exports.remove = (req, res) => {
+exports.remove = async (req, res) => {
+  try{
   const {id } = req.params;
+  const user = await User.deleteOne({ _id: id });
 
-  const index = users.findIndex(
-    (user) => user._id.toString() === id.toString(),
-
-  )
-  if (index === -1) {
+  if(user.deletedCount === 0) {
     res.status(404).json({
       message: "user not found",
       data: null,
     });
     return;
   }
-  users.splice(index, 1);
   res.status(200).json({
     message: "user deleted",
+    data: user,
   });
+} catch (error) {
+  res.status(500).json({
+    message: error.message || "something went wrong",
+    data: null,
+  });
+}
 };
 
 //  User.findByIdAndDelete(id); // find by id and delete

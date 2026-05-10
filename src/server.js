@@ -41,6 +41,44 @@ const server = http.createServer(app);
 //! connect database
 connectDB(DB_URI);
 
+//? middlewares
+const middleware = (req, res, next) => { 
+  const a = {};
+  console.log(req.method, req.url);
+  console.log("middleware called");
+  req.user = {
+    name: "john",
+  }
+  req.isAuthenticated = true;
+  next(); // pass control to next middleware in stack
+};
+const middleware1 = (req, res, next) => { 
+  // console.log(req.method, req.url);
+  console.log("middleware1 called", req.user);
+  if(req.isAuthenticated) {
+    next();
+  } else{
+    res.status(401).json({
+      message: "Unatuthorized access denied"
+    })
+  }
+  
+  // next(); // pass control to next middleware in stack
+};
+
+//? using middlewares
+app.use(middleware); //
+app.use(middleware1); 
+app.use((req, res, next) => {
+  console.log("object");
+  next();
+}, 
+  (req, res, next) => {
+    console.log("second");
+    next();
+  }
+);
+
 //! pase req json data to as req.body
 app.use(express.json()); // req.body = {}
 
@@ -141,3 +179,19 @@ server.listen(PORT, () => {
 //! res.json() => send json response
 //! res.status(status_code)  
 //! ress.cookie(key,value,options) 
+
+//? middleware
+//* is a function which has access to req obj (req) , res obj (res) & middlewaree next function (next)
+//* and executed betn req-res cycle
+
+//? can execute any code/logic
+//? can end req-res cycle
+// can modify req and res obj  // 
+//? can pass the control to next middleware in stack
+
+//* types of middleware
+//? application level middleware
+//? router level middleware
+//? error handling middleware
+//? built in middleware
+//? third party middleware 
